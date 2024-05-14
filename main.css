@@ -1,3 +1,78 @@
+html * {
+    font-family: sans-serif;
+}
+
 div {
     font-size: 50px;
+}
+
+.flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+button {
+    font-size: 20px;
+    padding: 10px 20px;
+    margin: 10px;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 60%;
+    margin: 0 auto;
+}
+
+fieldset {
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 10px;
+    margin: 10px;
+    width: 100%;
+}
+
+.optgroup {
+    font-size: 20px;
+}
+
+label {
+    font-size: 30px;
+}
+
+.line {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+    flex-direction: row;
+}
+
+.optgroup label {
+    font-size: 20px;
+    width: 50%;
+}
+
+input {
+    font-size: 20px;
+    padding: 10px;
+    margin: 10px;
+    width: 50%;
+}
+
+.boxes {
+    display: flex;
+}
+
+.boxes label {
+    width: fit-content;
+}
+
+.boxes input {
+    width: 20px;
+    height: 20px;
+    margin: 0 50px 0 10px;
 }

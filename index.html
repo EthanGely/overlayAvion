@@ -1,65 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SEPIA - niv 0</title>
     <link rel="stylesheet" href="main.css">
     <script src="main.js"></script>
+    <script src="logic.js"></script>
 </head>
+
 <body>
-    <div class="options">
-        <form action="">
+    <div class="flex">
+        <div class="active" id="default">
+            <button onclick="setCustomMode(false)">Paramétrages par défaut</button>
+        </div>
+        <div id="custom">
+            <button onclick="setCustomMode(true)">Paramétrages personnalisés</button>
+        </div>
+    </div>
+    <div id="parametrages">
+        <form id="formParametre" action="">
             <fieldset id="fieldsetEpreuve">
                 <label for="fieldsetEpreuve">Options des épreuves</label>
                 <div class="optgroup">
-                    <label for="epreuve_temps_min">Temps min entre deux épreuves (secondes)</label>
-                    <input type="number" id="epreuve_temps_min" name="epreuve_temps_min" placeholder="15">
-                    <label for="epreuve_temps_max">Temps max entre deux épreuves (secondes)</label>
-                    <input type="number" id="epreuve_temps_max" name="epreuve_temps_max" placeholder="40">
+                    <div class="flex line">
+                        <label for="epreuve_temps_min">Temps min entre deux épreuves (secondes)</label>
+                        <input type="number" id="epreuve_temps_min" name="epreuve_temps_min" placeholder="15">
+                    </div>
+                    <div class="flex line">
+                        <label for="epreuve_temps_max">Temps max entre deux épreuves (secondes)</label>
+                        <input type="number" id="epreuve_temps_max" name="epreuve_temps_max" placeholder="40">
+                    </div>
                 </div>
             </fieldset>
             <fieldset id="fieldsetMemoire">
                 <label for="fieldsetMemoire">Options des chiffres (mémoire)</label>
                 <div class="optgroup">
-                    <label for="memoire_nombre_min">Nombre minimum</label>
-                    <input type="number" id="memoire_nombre_min" name="memoire_nombre_min" placeholder="1">
-                    <label for="memoire_nombre_max">Nombre maximum</label>
-                    <input type="number" id="memoire_nombre_max" name="memoire_nombre_max" placeholder="50">
-                    <label for="memoire_temps">Temps d'affichage des chiffres (secondes)</label>
-                    <input type="number" id="memoire_temps" name="memoire_temps" placeholder="5">
+                    <div class="flex line">
+                        <label for="memoire_nombre_min">Nombre minimum</label>
+                        <input type="number" id="memoire_nombre_min" name="memoire_nombre_min" placeholder="1">
+                    </div>
+                    <div class="flex line">
+                        <label for="memoire_nombre_max">Nombre maximum</label>
+                        <input type="number" id="memoire_nombre_max" name="memoire_nombre_max" placeholder="50">
+                    </div>
+                    <div class="flex line">
+                        <label for="memoire_temps">Temps d'affichage des chiffres (secondes)</label>
+                        <input type="number" id="memoire_temps" name="memoire_temps" placeholder="5">
+                    </div>
                 </div>
             </fieldset>
             <fieldset id="fieldsetCalculs">
                 <label for="fieldsetCalculs">Options des calculs</label>
                 <div class="optgroup">
-                    <label for="calculs_nombre_min">Nombre minimum</label>
-                    <input type="number" id="calculs_nombre_min" name="calculs_nombre_min" placeholder="1">
-                    <label for="calculs_nombre_max">Nombre maximum</label>
-                    <input type="number" id="calculs_nombre_max" name="calculs_nombre_max" placeholder="20">
-                    <label for="calculs_nb">Nombre de calculs</label>
-                    <input type="number" id="calculs_nb" name="calculs_nb" placeholder="5">
+                    <div class="flex line">
+                        <label for="calculs_nombre_min">Nombre minimum</label>
+                        <input type="number" id="calculs_nombre_min" name="calculs_nombre_min" placeholder="1">
+                    </div>
+                    <div class="flex line">
+                        <label for="calculs_nombre_max">Nombre maximum</label>
+                        <input type="number" id="calculs_nombre_max" name="calculs_nombre_max" placeholder="20">
+                    </div>
+                    <div class="flex line">
+                        <label for="calculs_nb">Nombre de calculs</label>
+                        <input type="number" id="calculs_nb" name="calculs_nb" placeholder="5">
+                    </div>
+                    <div class="flex line">
+                        <label for="calcul_temps">Temps d'affichage des calculs (secondes)</label>
+                        <input type="number" id="calcul_temps" name="calcul_temps" placeholder="10">
+                    </div>
                     <label for="calculs_type">Type de calculs</label>
                     <div class="boxes" id="calculs_type">
                         <label for="calculs_type_addition">Additions</label>
-                        <input type="checkbox" name="calculs_type_addition" id="calculs_type_addition" value="Additions">
+                        <input type="checkbox" name="calculs_type_addition" id="calculs_type_addition"
+                            value="Additions">
                         <label for="calculs_type_soustraction">Soustractions</label>
-                        <input type="checkbox" name="calculs_type_soustraction" id="calculs_type_soustraction" value="Soustractions">
+                        <input type="checkbox" name="calculs_type_soustraction" id="calculs_type_soustraction"
+                            value="Soustractions">
                         <label for="calculs_type_multiplication">Multiplications</label>
-                        <input type="checkbox" name="calculs_type_multiplication" id="calculs_type_multiplication" value="Multiplications">
+                        <input type="checkbox" name="calculs_type_multiplication" id="calculs_type_multiplication"
+                            value="Multiplications">
                         <label for="calculs_type_division">Divisions</label>
-                        <input type="checkbox" name="calculs_type_division" id="calculs_type_division" value="Divisions">
+                        <input type="checkbox" name="calculs_type_division" id="calculs_type_division"
+                            value="Divisions">
                     </div>
-                    
+
                 </div>
             </fieldset>
+            <button type="submit">Enregistrer les paramètres</button>
         </form>
     </div>
 
+    <button id="startGame" onclick="startGame()">Commencer</button>
     <div class="game">
         <div id="ordreChiffre"></div>
         <div id="symboles"></div>
         <div id="calculs"></div>
     </div>
 </body>
+
 </html>
