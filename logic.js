@@ -5,9 +5,9 @@
 
 // Temps min et max entre l'affichage de deux "épreuves"
 // Temps en Milisecondes, donc 15000 = 15 secondes (pas d'espaces)
-const tempsMin = 15000;
+let tempsMin = 15000;
 //const tempsMin = 1000;
-const tempsMax = 40000;
+let tempsMax = 40000;
 //const tempsMax = 2000;
 
 ////
@@ -15,36 +15,36 @@ const tempsMax = 40000;
 //// Variables pour l'ordre des chiffres ////
 //
 // Chiffre minimal pour l'ordre des chiffres
-const chiffreMin = 1;
+let chiffreMin = 1;
 //
 // Chiffre maximal pour l'ordre des chiffres
-const chiffreMax = 50;
+let chiffreMax = 50;
 //
 // Nombre de chiffres pour l'ordre des chiffres
-const nombreDeChiffres = 5;
+let nombreDeChiffres = 5;
 //
 // Temps d'affichage des chiffres
-const tempsAffichageChiffres = 5000;
+let tempsAffichageChiffres = 5000;
 //
 ////
 
 //// Variables pour les calculs ////
 //
 // Chiffre minimal pour l'ordre des chiffres
-const chiffreMinCalculs = 1;
+let chiffreMinCalculs = 1;
 //
 // Chiffre maximal pour l'ordre des chiffres
-const chiffreMaxCalculs = 20;
+let chiffreMaxCalculs = 20;
 //
 // Nombre de calculs
-const nombreDeCalculs = 5;
+let nombreDeCalculs = 5;
 //
 // Types d'opérations (mettre deux // pour commenter)
-const operations = ['+', '-'];
+let operations = ['+', '-'];
 //const operations = ['+', '-', '*', '/'];
 //
 // Temps d'affichage des chiffres
-const tempsAffichageCalculs = 10000;
+let tempsAffichageCalculs = 10000;
 //
 ////
 
@@ -60,13 +60,39 @@ let iNbChiffre = 0;
 let iNbCalculs = 0;
 let calculsArray = [];
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (false) {
-        script();
-    }
-});
 
-function script() { 
+function loadParameters(parameters) {
+    if (!parameters) {
+        console.log("Pas de paramètres");
+        return;
+    }
+    console.log("Chargement des paramètres");
+    tempsMin = parameters.epreuve_temps_min ? parameters.epreuve_temps_min : 15000;
+    console.log("Temps min :", tempsMin);
+    tempsMax = parameters.epreuve_temps_max ? parameters.epreuve_temps_max : 40000;
+    console.log("Temps max :", tempsMax);
+    chiffreMin = parameters.memoire_nombre_min ? parameters.memoire_nombre_min : 1;
+    console.log("Chiffre min :", chiffreMin);
+    chiffreMax = parameters.memoire_nombre_max ? parameters.memoire_nombre_max : 50;
+    console.log("Chiffre max :", chiffreMax);
+    nombreDeChiffres = parameters.memoire_nombre_nb ? parameters.memoire_nombre_nb : 5;
+    console.log("Nombre de chiffres :", nombreDeChiffres);
+    tempsAffichageChiffres = parameters.memoire_temps ? parameters.memoire_temps : 5000;
+    console.log("Temps affichage chiffres :", tempsAffichageChiffres);
+    chiffreMinCalculs = parameters.calculs_nombre_min ? parameters.calculs_nombre_min : 1;
+    console.log("Chiffre min calculs :", chiffreMinCalculs);
+    chiffreMaxCalculs = parameters.calculs_nombre_max ? parameters.calculs_nombre_max : 20;
+    console.log("Chiffre max calculs :", chiffreMaxCalculs);
+    nombreDeCalculs = parameters.calculs_nb ? parameters.calculs_nb : 5;
+    console.log("Nombre de calculs :", nombreDeCalculs);
+    tempsAffichageCalculs = parameters.calcul_temps ? parameters.calcul_temps : 10000;
+    console.log("Temps affichage calculs :", tempsAffichageCalculs);
+    operations = parameters.calculs_types ? parameters.calculs_types : ['+', '-'];
+    console.log("Opérations :", operations);
+    console.log("Paramètres chargés");
+}
+
+function game() { 
         const ordreChiffre = document.getElementById('ordreChiffre');
         const symboles = document.getElementById('symboles');
         const calculs = document.getElementById('calculs');
@@ -272,6 +298,7 @@ function showFormCalculs() {
 
             calculs.innerHTML = "Résultats corrects : " + correctResults.join(' - ');
             calculs.innerHTML += "<br>Résultats entrés&nbsp;&nbsp;&nbsp;&nbsp;: " + userResults.join(' - ');
+            document.getElementById('title').innerHTML = "Terminé !";
         });
     }, randomTime + 3000);
 }

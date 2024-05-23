@@ -1,21 +1,23 @@
 let parameters = null;
+let customMode = false;
 
 document.addEventListener('DOMContentLoaded', (event) => {
     setCustomMode(false);
     document.getElementById('formParametre').addEventListener('submit', (event) => {
         event.preventDefault();
         parameters = getParameters();
-        console.log(parameters);
-        console.log(parameters.memoire_nombre_max)
+        alert('Paramètres enregistrés');
     });
 });
 
 function setCustomMode(isCustom) {
     if (isCustom) {
+        customMode = true;
         document.getElementById('custom').classList.add = 'active';
         document.getElementById('default').classList.remove = 'active';
         document.getElementById('parametrages').style.display = 'block';
     } else {
+        customMode = false;
         document.getElementById('default').classList.add = 'active';
         document.getElementById('custom').classList.remove = 'active';
         document.getElementById('parametrages').style.display = 'none';
@@ -68,5 +70,10 @@ function getParameters() {
 }
 
 function startGame() {
-    script();
+    document.getElementById('mode').style.display = 'none';
+    document.getElementById('parametrages').style.display = 'none';
+    document.getElementById('startGame').style.display = 'none';
+    document.getElementById('title').style.display = 'block';
+    loadParameters(customMode ? parameters : null);
+    game();
 }

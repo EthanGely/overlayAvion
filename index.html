@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div class="flex">
+    <div id="mode" class="flex">
         <div class="active" id="default">
             <button onclick="setCustomMode(false)">Paramétrages par défaut</button>
         </div>
@@ -91,6 +91,8 @@
             <button type="submit">Enregistrer les paramètres</button>
         </form>
     </div>
+    <div style="text-align: center; display: none;" id="title">
+    <h3 id="h3">En cours</h3></div>
 
     <button id="startGame" onclick="startGame()">Commencer</button>
     <div class="game">
