@@ -36,7 +36,11 @@
             </fieldset>
             <fieldset id="fieldsetMemoire">
                 <label for="fieldsetMemoire">Options des chiffres (mémoire)</label>
-                <div class="optgroup">
+                <label class="switch">
+                    <input id="memoryToggle" type="checkbox" onclick="activateMemory()">
+                    <span class="slider round"></span>
+                </label>
+                <div id="memoryGroup" class="optgroup" style="display: none;">
                     <div class="flex line">
                         <label for="memoire_nombre_min">Nombre minimum</label>
                         <input type="number" id="memoire_nombre_min" name="memoire_nombre_min" placeholder="1">
@@ -49,11 +53,19 @@
                         <label for="memoire_temps">Temps d'affichage des chiffres (secondes)</label>
                         <input type="number" id="memoire_temps" name="memoire_temps" placeholder="5">
                     </div>
+                    <div class="flex line">
+                        <label for="memoire_nombre_nb">Nombre de chiffres</label>
+                        <input type="number" id="memoire_nombre_nb" name="memoire_nombre_nb" placeholder="5">
+                    </div>
                 </div>
             </fieldset>
-            <fieldset id="fieldsetCalculs">
+            <fieldset id="fieldsetCalculs" class="fullWidth">
                 <label for="fieldsetCalculs">Options des calculs</label>
-                <div class="optgroup">
+                <label class="switch">
+                    <input id="calculToggle" type="checkbox" onclick="activateCalcul()">
+                    <span class="slider round"></span>
+                </label>
+                <div id="calculGroup" class="optgroup" style="display: none;">
                     <div class="flex line">
                         <label for="calculs_nombre_min">Nombre minimum</label>
                         <input type="number" id="calculs_nombre_min" name="calculs_nombre_min" placeholder="1">
@@ -92,10 +104,12 @@
         </form>
     </div>
     <div style="text-align: center; display: none;" id="title">
-    <h3 id="h3">En cours</h3></div>
+        <h3 id="h3">En cours</h3>
+    </div>
 
     <button id="startGame" onclick="startGame()">Commencer</button>
     <div class="game">
+        <div id="chrono"></div>
         <div id="ordreChiffre"></div>
         <div id="symboles"></div>
         <div id="calculs"></div>

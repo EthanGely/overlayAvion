@@ -11,6 +11,10 @@ let tempsMax = 40000;
 //const tempsMax = 2000;
 
 ////
+let memoryOn = true;
+let calculOn = true;
+
+
 
 //// Variables pour l'ordre des chiffres ////
 //
@@ -61,80 +65,113 @@ let iNbCalculs = 0;
 let calculsArray = [];
 
 
-function loadParameters(parameters) {
+function loadParameters(parameters, memoryOnParam, calculOnParam) {
     if (!parameters) {
         console.log("Pas de paramètres");
         return;
     }
     console.log("Chargement des paramètres");
+    console.log("------------- Paramètres globaux -------------");
     tempsMin = parameters.epreuve_temps_min ? parameters.epreuve_temps_min : 15000;
-    console.log("Temps min :", tempsMin);
+    console.log("Temps min entre deux épreuves :", tempsMin);
     tempsMax = parameters.epreuve_temps_max ? parameters.epreuve_temps_max : 40000;
-    console.log("Temps max :", tempsMax);
-    chiffreMin = parameters.memoire_nombre_min ? parameters.memoire_nombre_min : 1;
-    console.log("Chiffre min :", chiffreMin);
-    chiffreMax = parameters.memoire_nombre_max ? parameters.memoire_nombre_max : 50;
-    console.log("Chiffre max :", chiffreMax);
-    nombreDeChiffres = parameters.memoire_nombre_nb ? parameters.memoire_nombre_nb : 5;
-    console.log("Nombre de chiffres :", nombreDeChiffres);
-    tempsAffichageChiffres = parameters.memoire_temps ? parameters.memoire_temps : 5000;
-    console.log("Temps affichage chiffres :", tempsAffichageChiffres);
-    chiffreMinCalculs = parameters.calculs_nombre_min ? parameters.calculs_nombre_min : 1;
-    console.log("Chiffre min calculs :", chiffreMinCalculs);
-    chiffreMaxCalculs = parameters.calculs_nombre_max ? parameters.calculs_nombre_max : 20;
-    console.log("Chiffre max calculs :", chiffreMaxCalculs);
-    nombreDeCalculs = parameters.calculs_nb ? parameters.calculs_nb : 5;
-    console.log("Nombre de calculs :", nombreDeCalculs);
-    tempsAffichageCalculs = parameters.calcul_temps ? parameters.calcul_temps : 10000;
-    console.log("Temps affichage calculs :", tempsAffichageCalculs);
-    operations = parameters.calculs_types ? parameters.calculs_types : ['+', '-'];
-    console.log("Opérations :", operations);
+    console.log("Temps max entre deux épreuves :", tempsMax);
+
+    console.log("------------- Paramètres mémoire -------------");
+    memoryOn = parameters.memoryToggle ? parameters.memoryToggle : false;
+    if (memoryOn) {
+        console.log("épreuve mémoire activée");
+        chiffreMin = parameters.memoire_nombre_min ? parameters.memoire_nombre_min : 1;
+        console.log("Chiffre min :", chiffreMin);
+        chiffreMax = parameters.memoire_nombre_max ? parameters.memoire_nombre_max : 50;
+        console.log("Chiffre max :", chiffreMax);
+        nombreDeChiffres = parameters.memoire_nombre_nb ? parameters.memoire_nombre_nb : 5;
+        console.log("Nombre de chiffres :", nombreDeChiffres);
+        tempsAffichageChiffres = parameters.memoire_temps ? parameters.memoire_temps : 5000;
+        console.log("Temps affichage chiffres :", tempsAffichageChiffres);
+    } else {
+        console.log("épreuve mémoire désactivée");
+        nombreDeChiffres = 0;
+    }
+
+    console.log("------------- Paramètres calculs -------------");
+
+    calculOn = parameters.calculToggle ? parameters.calculToggle : false;
+
+    if (calculOn) {
+        console.log("épreuve calculs activée");
+        chiffreMinCalculs = parameters.calculs_nombre_min ? parameters.calculs_nombre_min : 1;
+        console.log("Chiffre min calculs :", chiffreMinCalculs);
+        chiffreMaxCalculs = parameters.calculs_nombre_max ? parameters.calculs_nombre_max : 20;
+        console.log("Chiffre max calculs :", chiffreMaxCalculs);
+        nombreDeCalculs = parameters.calculs_nb ? parameters.calculs_nb : 5;
+        console.log("Nombre de calculs :", nombreDeCalculs);
+        tempsAffichageCalculs = parameters.calcul_temps ? parameters.calcul_temps : 10000;
+        console.log("Temps affichage calculs :", tempsAffichageCalculs);
+        operations = parameters.calculs_types ? parameters.calculs_types : ['+', '-'];
+        console.log("Opérations :", operations);
+    } else {
+        console.log("épreuve calculs désactivée");
+        nombreDeCalculs = 0;
+    }
+
     console.log("Paramètres chargés");
 }
 
-function game() { 
-        const ordreChiffre = document.getElementById('ordreChiffre');
-        const symboles = document.getElementById('symboles');
-        const calculs = document.getElementById('calculs');
-    
-        console.log("Démarrage du script");
+function game() {
+    const ordreChiffre = document.getElementById('ordreChiffre');
+    const symboles = document.getElementById('symboles');
+    const calculs = document.getElementById('calculs');
+
+    if (!memoryOn && !calculOn) {
+        alert("Aucune épreuve activée");
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
+    }
+
+    console.log("Démarrage du script");
+    if (calculOn) {
         generateCalculs();
-    
+    }
+
+    if (memoryOn) {
         generateChiffre();
-    
-        // at random times, display a number in the ordreChiffre div
-        // Then show the whole number list
-    
-        for (let i = 0; i < (nombreDeChiffres + nombreDeCalculs); i++) {
-            // Generate a random time between 15 seconds (15000 ms) and 40 seconds (40000 ms)
-            randomTime = generateRandomTime();
-            oldTime = randomTime;
-    
-            if (iNbChiffre < nombreDeChiffres) {
-                if (iNbCalculs < nombreDeCalculs) {
-                    if (Math.random() < 0.5) {
-                        showChiffre(iNbChiffre);
-                        iNbChiffre++;
-                    } else {
-                        showCalcul(iNbCalculs);
-                        iNbCalculs++;
-                    }
-                } else {
+    }
+
+    for (let i = 0; i < (nombreDeChiffres + nombreDeCalculs); i++) {
+        randomTime = generateRandomTime();
+        oldTime = randomTime;
+
+        if (iNbChiffre < nombreDeChiffres) {
+            if (iNbCalculs < nombreDeCalculs) {
+                if (Math.random() < 0.5) {
                     showChiffre(iNbChiffre);
                     iNbChiffre++;
-                }
-            } else {
-                if (iNbCalculs < nombreDeCalculs) {
+                } else {
                     showCalcul(iNbCalculs);
                     iNbCalculs++;
                 }
+            } else {
+                showChiffre(iNbChiffre);
+                iNbChiffre++;
+            }
+        } else {
+            if (iNbCalculs < nombreDeCalculs) {
+                showCalcul(iNbCalculs);
+                iNbCalculs++;
             }
         }
-    
-    
+    }
+
+
+    if (memoryOn) {
         showFormChiffre();
-    
+    }
+
+    if (calculOn) {
         showFormCalculs();
+    }
 }
 
 function generateRandomTime() {
@@ -147,7 +184,8 @@ function generateChiffre() {
 }
 
 function generateRandomChiffre(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    const nb = Math.floor(Math.random() * (parseInt(max) - parseInt(min) + 1)) + parseInt(min);
+    return nb;
 }
 
 function showChiffre(i) {
@@ -163,6 +201,9 @@ function showChiffre(i) {
 }
 
 function showFormChiffre() {
+    console.log("random time : ", randomTime);
+    console.log("temps affichage chiffres : ", tempsAffichageChiffres);
+    console.log("Trying to show form blyaaaaaad\nTimeout : ", parseInt(randomTime) + parseInt(tempsAffichageChiffres) + 3000);
     setTimeout(() => {
         const form = document.createElement('form');
         const label = document.createElement('label');
@@ -201,7 +242,7 @@ function showFormChiffre() {
                 ordreChiffre.innerHTML += "<br>Dommage !";
             }
         });
-    }, randomTime + 3000);
+    }, parseInt(randomTime) + parseInt(tempsAffichageChiffres) + 3000);
 }
 
 function generateCalculs() {
@@ -216,7 +257,7 @@ function generateCalculs() {
 
         calculsArray.push([chiffre1, operation, chiffre2]);
     }
-    console.log(calculsArray);
+    console.log("generated caluclations :", calculsArray);
 }
 
 function showCalcul(i) {
@@ -241,6 +282,7 @@ function showFormCalculs() {
             let i = calculsArray.indexOf(calcul);
             const label = document.createElement('label');
             const input = document.createElement('input');
+            const div = document.createElement('div');
 
             label.for = 'calc' + i;
             label.innerHTML = 'Calcul ' + i + ' : ';
@@ -249,9 +291,9 @@ function showFormCalculs() {
             input.id = 'calc' + i;
             input.required = true;
 
-            form.appendChild(label);
-            form.appendChild(input);
-            form.appendChild(document.createElement('br'));
+            div.appendChild(label);
+            div.appendChild(input);
+            form.appendChild(div);
         });
 
         submit.type = 'submit';
@@ -300,5 +342,5 @@ function showFormCalculs() {
             calculs.innerHTML += "<br>Résultats entrés&nbsp;&nbsp;&nbsp;&nbsp;: " + userResults.join(' - ');
             document.getElementById('title').innerHTML = "Terminé !";
         });
-    }, randomTime + 3000);
+    }, randomTime + tempsAffichageCalculs + 3000);
 }
