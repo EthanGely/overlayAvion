@@ -122,6 +122,11 @@ function game() {
     const ordreChiffre = document.getElementById('ordreChiffre');
     const symboles = document.getElementById('symboles');
     const calculs = document.getElementById('calculs');
+    const calculResults = document.getElementById('calculResults');
+    const chiffreResults = document.getElementById('chiffreResults');
+
+    chiffreResults.innerHTML = "";
+    calculResults.innerHTML = "";
 
     if (!memoryOn && !calculOn) {
         alert("Aucune épreuve activée");
@@ -165,13 +170,7 @@ function game() {
     }
 
 
-    if (memoryOn) {
-        showFormChiffre();
-    }
-
-    if (calculOn) {
-        showFormCalculs();
-    }
+    showForm();
 }
 
 function generateRandomTime() {
@@ -201,48 +200,27 @@ function showChiffre(i) {
 }
 
 function showFormChiffre() {
-    console.log("random time : ", randomTime);
-    console.log("temps affichage chiffres : ", tempsAffichageChiffres);
-    console.log("Trying to show form blyaaaaaad\nTimeout : ", parseInt(randomTime) + parseInt(tempsAffichageChiffres) + 3000);
-    setTimeout(() => {
-        const form = document.createElement('form');
-        const label = document.createElement('label');
-        const input = document.createElement('input');
-        const submit = document.createElement('input');
+    const fieldsetChiffre = document.createElement('fieldset');
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    const submit = document.createElement('input');
 
-        label.for = 'ordre';
-        label.innerHTML = 'Suite de chiffres séparés par des espaces<br>';
+    label.for = 'ordre';
+    label.innerHTML = 'Suite de chiffres séparés par des espaces<br>';
 
-        input.type = 'text';
-        input.id = 'ordre';
-        input.required = true;
+    input.type = 'text';
+    input.id = 'ordre';
+    input.required = true;
 
-        submit.type = 'submit';
-        submit.value = 'Valider';
-        ordreChiffre.innerHTML = "";
+    submit.type = 'submit';
+    submit.value = 'Valider';
+    ordreChiffre.innerHTML = "";
 
-        form.appendChild(label);
-        form.appendChild(input);
-        form.appendChild(submit);
+    fieldsetChiffre.appendChild(label);
+    fieldsetChiffre.appendChild(input);
+    fieldsetChiffre.appendChild(submit);
 
-        ordreChiffre.appendChild(form);
-
-
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-
-            const ordre = input.value.split(' ').map(Number);
-
-            ordreChiffre.innerHTML = "Ordre correct : " + entiers.join(' - ');
-            ordreChiffre.innerHTML += "<br>Ordre entré&nbsp;&nbsp;&nbsp;&nbsp;: " + ordre.join(' - ');
-
-            if (JSON.stringify(ordre) === JSON.stringify(entiers)) {
-                ordreChiffre.innerHTML += "<br>Bravo !";
-            } else {
-                ordreChiffre.innerHTML += "<br>Dommage !";
-            }
-        });
-    }, parseInt(randomTime) + parseInt(tempsAffichageChiffres) + 3000);
+    return fieldsetChiffre;
 }
 
 function generateCalculs() {
@@ -274,73 +252,105 @@ function showCalcul(i) {
 }
 
 function showFormCalculs() {
+    const fieldsetCalcul = document.createElement('fieldset');
+
+    calculsArray.forEach(calcul => {
+        let i = calculsArray.indexOf(calcul);
+        const label = document.createElement('label');
+        const input = document.createElement('input');
+        const div = document.createElement('div');
+
+        label.for = 'calc' + i;
+        label.innerHTML = 'Calcul ' + i + ' : ';
+
+        input.type = 'text';
+        input.id = 'calc' + i;
+        input.required = true;
+
+        div.appendChild(label);
+        div.appendChild(input);
+        fieldsetCalcul.appendChild(div);
+    });
+
+    calculs.innerHTML = "";
+
+    return fieldsetCalcul;
+}
+
+function showForm() {
     setTimeout(() => {
         const form = document.createElement('form');
+
+        if (memoryOn) {
+            form.append(showFormChiffre());
+        }
+
+        if (calculOn) {
+            form.append(showFormCalculs());
+        }
+
         const submit = document.createElement('input');
-
-        calculsArray.forEach(calcul => {
-            let i = calculsArray.indexOf(calcul);
-            const label = document.createElement('label');
-            const input = document.createElement('input');
-            const div = document.createElement('div');
-
-            label.for = 'calc' + i;
-            label.innerHTML = 'Calcul ' + i + ' : ';
-
-            input.type = 'text';
-            input.id = 'calc' + i;
-            input.required = true;
-
-            div.appendChild(label);
-            div.appendChild(input);
-            form.appendChild(div);
-        });
-
         submit.type = 'submit';
         submit.value = 'Valider';
-        calculs.innerHTML = "";
-
-
         form.appendChild(submit);
 
-        calculs.appendChild(form);
+        document.getElementById('responseForm').appendChild(form);
+
+
 
 
         form.addEventListener('submit', (event) => {
             event.preventDefault();
-            const userResults = [];
-            const correctResults = [];
 
-            for (let i = 0; i < nombreDeCalculs; i++) {
-                const input = document.getElementById('calc' + i);
-                const userResult = Number(input.value);
-                const [num1, operation, num2] = calculsArray[i];
-                let correctResult;
+            if (memoryOn) {
+                const ordre = input.value.split(' ').map(Number);
 
-                switch (operation) {
-                    case '+':
-                        correctResult = num1 + num2;
-                        break;
-                    case '-':
-                        correctResult = num1 - num2;
-                        break;
-                    case '*':
-                        correctResult = num1 * num2;
-                        break;
-                    case '/':
-                        correctResult = num1 / num2;
-                        break;
-                    default:
-                        break;
+                ordreChiffre.innerHTML = "Ordre correct : " + entiers.join(' - ');
+                ordreChiffre.innerHTML += "<br>Ordre entré&nbsp;&nbsp;&nbsp;&nbsp;: " + ordre.join(' - ');
+
+                if (JSON.stringify(ordre) === JSON.stringify(entiers)) {
+                    ordreChiffre.innerHTML += "<br>Bravo !";
+                } else {
+                    ordreChiffre.innerHTML += "<br>Dommage !";
                 }
-
-                userResults.push(userResult);
-                correctResults.push(correctResult);
             }
 
-            calculs.innerHTML = "Résultats corrects : " + correctResults.join(' - ');
-            calculs.innerHTML += "<br>Résultats entrés&nbsp;&nbsp;&nbsp;&nbsp;: " + userResults.join(' - ');
-            document.getElementById('title').innerHTML = "Terminé !";
+            if (calculOn) {
+                const userResults = [];
+                const correctResults = [];
+
+                for (let i = 0; i < nombreDeCalculs; i++) {
+                    const input = document.getElementById('calc' + i);
+                    const userResult = Number(input.value);
+                    const [num1, operation, num2] = calculsArray[i];
+                    let correctResult;
+
+                    switch (operation) {
+                        case '+':
+                            correctResult = num1 + num2;
+                            break;
+                        case '-':
+                            correctResult = num1 - num2;
+                            break;
+                        case '*':
+                            correctResult = num1 * num2;
+                            break;
+                        case '/':
+                            correctResult = num1 / num2;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    userResults.push(userResult);
+                    correctResults.push(correctResult);
+                }
+
+                calculs.innerHTML = "Résultats corrects : " + correctResults.join(' - ');
+                calculs.innerHTML += "<br>Résultats entrés&nbsp;&nbsp;&nbsp;&nbsp;: " + userResults.join(' - ');
+            }
+
+
         });
-    }, randomTime + tempsAffichageCalculs + 3000);
+    }, parseInt(randomTime) + Math.max(parseInt(tempsAffichageChiffres), parseInt(tempsAffichageCalculs)) + 3000);
 }

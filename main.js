@@ -1,9 +1,15 @@
 let parameters = null;
-let customMode = false;
-let memoryOnMain = false;
-let calculOnMain = false;
+let isCustomMode = false;
+let isMemoryOnMain = false;
+let isCalculOnMain = false;
 
 document.addEventListener('DOMContentLoaded', (event) => {
+    const calculResults = document.getElementById('calculResults');
+    const chiffreResults = document.getElementById('chiffreResults');
+
+    chiffreResults.innerHTML = "";
+    calculResults.innerHTML = "";
+
     setCustomMode(false);
     document.getElementById('formParametre').addEventListener('submit', (event) => {
         event.preventDefault();
@@ -14,12 +20,22 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 function setCustomMode(isCustom) {
     if (isCustom) {
-        customMode = true;
+        isCustomMode = true;
         document.getElementById('custom').classList.add = 'active';
         document.getElementById('default').classList.remove = 'active';
         document.getElementById('parametrages').style.display = 'block';
+
+        if (localStorage.getItem('parameters')) {
+            loadParamBtn = document.createElement('button');
+            loadParamBtn.innerHTML = 'Charger les paramètres enregistrés';
+            loadParamBtn.addEventListener('click', loadParametersMain);
+            loadParamBtn.style.margin = "50px auto 10px auto";
+            loadParamBtn.style.display = "block";
+            document.getElementById('parametrages').prepend(loadParamBtn);
+        }
+
     } else {
-        customMode = false;
+        isCustomMode = false;
         document.getElementById('default').classList.add = 'active';
         document.getElementById('custom').classList.remove = 'active';
         document.getElementById('parametrages').style.display = 'none';
@@ -46,7 +62,7 @@ function saveParameters() {
     if (parameters.calculToggle) {
         // Calculs
         parameters.calculs_nombre_min = parseInt(document.getElementById('calculs_nombre_min').value) || 1;
-        parameters.calculs_nombre_max = parseInt(document.getElementById('calculs_nombre_max').value) ||20;
+        parameters.calculs_nombre_max = parseInt(document.getElementById('calculs_nombre_max').value) || 20;
         parameters.calculs_nb = parseInt(document.getElementById('calculs_nb').value) || 5;
         parameters.calcul_temps = parseInt(document.getElementById('calcul_temps').value) * 1000 || 10000;
         parameters.calculs_types = [];
@@ -77,28 +93,33 @@ function saveParameters() {
 function loadParametersMain() {
     //check if parameters exist in local storage
     if (localStorage.getItem('parameters')) {
+        // Load parameters from local storage
         parameters = JSON.parse(localStorage.getItem('parameters'));
 
+        // Temps entre épreuves (min / max)
         document.getElementById('epreuve_temps_min').value = parameters.epreuve_temps_min / 1000;
         document.getElementById('epreuve_temps_max').value = parameters.epreuve_temps_max / 1000;
 
+        // Mémoire
         const memoryToggle = document.getElementById('memoryToggle');
-        if ((memoryToggle.checked && !parameters.memoryToggle) || (!memoryToggle.checked && parameters.memoryToggle)) {
-            activateMemory();
+        // If memoryToggle is not checked and parameters.memoryToggle is true or vice versa, then check the checkbox
+        if ((!memoryToggle.checked && parameters.memoryToggle) || (memoryToggle.checked && !parameters.memoryToggle)) {
+            activateMemory(true);
         }
-        memoryToggle.checked = parameters.memoryToggle;
+
+       // If memoryToggle is checked, then set the values of the memory parameters
         if (parameters.memoryToggle) {
             // Mémoire
             document.getElementById('memoire_nombre_min').value = parameters.memoire_nombre_min;
             document.getElementById('memoire_nombre_max').value = parameters.memoire_nombre_max;
-            document.getElementById('memoire_temps').value = parameters.memoire_temps  / 1000;
+            document.getElementById('memoire_temps').value = parameters.memoire_temps / 1000;
+            document.getElementById('memoire_nombre_nb').value = parameters.memoire_nombre_nb;
         }
 
         const calculToggle = document.getElementById('calculToggle');
-        if ((calculToggle.checked && !parameters.calculToggle) || (!calculToggle.checked && calculToggle.memoryToggle)) {
-            activateCalcul();
+        if ((!calculToggle.checked && parameters.calculToggle) || (calculToggle.checked && !calculToggle.calculToggle)) {
+            activateCalcul(true);
         }
-        calculToggle.checked = parameters.calculToggle;
 
         if (parameters.calculToggle) {
             // Calculs
@@ -123,33 +144,36 @@ function startGame() {
     document.getElementById('parametrages').style.display = 'none';
     document.getElementById('startGame').style.display = 'none';
     document.getElementById('title').style.display = 'block';
-    if (customMode && parameters) {
-        loadParameters(parameters, memoryOnMain, calculOnMain);
+    if (isCustomMode && parameters) {
+        loadParameters(parameters, isMemoryOnMain, isCalculOnMain);
     } else {
         loadParameters(null, null, null);
     }
     game();
 }
 
-function activateMemory() {
+function activateMemory(isProgram = false) {
     memoryToggle = document.getElementById('memoryToggle');
     memoryGroup = document.getElementById('memoryGroup');
-    activate(memoryToggle, memoryGroup, memoryOnMain);
+    isMemoryOnMain = !isMemoryOnMain;
+    activate(memoryToggle, memoryGroup, isProgram);
 }
 
-function activateCalcul() {
+function activateCalcul(isProgram = false) {
     calculToggle = document.getElementById('calculToggle');
     calculGroup = document.getElementById('calculGroup');
-    activate(calculToggle, calculGroup, calculOnMain);
+    isCalculOnMain = !isCalculOnMain;
+    activate(calculToggle, calculGroup, isProgram);
 }
 
-function activate(toggleButton, targetElement, elementOn) {
-    if (true) {
-        elementOn = !elementOn;
-        if (toggleButton.checked) {
-            targetElement.style.display = 'block';
-        } else {
-            targetElement.style.display = 'none';
-        }
+function activate(toggleButton, targetElement, isProgram) {
+    console.log("Is toggle button checked :", toggleButton.checked);
+    if (isProgram) {
+        toggleButton.checked = !toggleButton.checked;
+    }
+    if (toggleButton.checked) {
+        targetElement.style.display = 'block';
+    } else {
+        targetElement.style.display = 'none';
     }
 }
