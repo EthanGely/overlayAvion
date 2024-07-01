@@ -117,6 +117,7 @@ function loadParametersMain() {
         }
 
         const calculToggle = document.getElementById('calculToggle');
+        const activateCalculToggle = calculToggle.checked && parameters.calculToggle;
         if ((!calculToggle.checked && parameters.calculToggle) || (calculToggle.checked && !calculToggle.calculToggle)) {
             activateCalcul(true);
         }
